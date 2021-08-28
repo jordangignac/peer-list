@@ -8,7 +8,7 @@ export default function TodoItem(props) {
           <input
             type="checkbox"
             checked={completed}
-            onChange={() => setCompleted(!completed)}
+            onChange={setCompleted}
             className="checkbox checkbox-primary"
           />
           <button
