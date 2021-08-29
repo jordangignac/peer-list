@@ -63,7 +63,7 @@ export default function Home() {
         <span className="text-primary">peer</span>-list
       </h1>
 
-      <code className="mt-3 p-3 font-mono text-sm sm:text-lg bg-gray-100 rounded-md">
+      <code className="mt-3 p-3 font-mono text-sm text-center sm:text-lg bg-gray-100 rounded-md">
         collaborative distributed lists
       </code>
 
