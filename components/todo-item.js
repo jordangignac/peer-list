@@ -1,7 +1,7 @@
 export default function TodoItem(props) {
   const {content, completed, setCompleted, removeItem} = props;
   return (
-    <div className="p-6 mt-3 text-left border w-full rounded-xl">
+    <div className="p-6 mt-3 text-left border w-full rounded-xl bg-white">
       <div className="flex justify-between">
         <p className="text-xl font-bold">{content}</p>
         <div className="flex">
