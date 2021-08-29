@@ -1,9 +1,10 @@
 export default function TodoItem(props) {
   const {content, completed, setCompleted, removeItem} = props;
+  const completeStyle = completed ? 'line-through text-gray-300' : '';
   return (
     <div className="p-6 mt-3 text-left border w-full rounded-xl bg-white">
       <div className="flex justify-between">
-        <p className="text-xl font-bold">{content}</p>
+        <p className={`sm:text-xl font-bold ${completeStyle}`}>{content}</p>
         <div className="flex">
           <input
             type="checkbox"
