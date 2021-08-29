@@ -14,6 +14,7 @@ export default class MyPeer {
       this.id = this.peer.id;
       this.peer.on('connection', connection => {
         connection.on('data', this.receiveEvent.bind(this));
+        connection.on('close', this.disconnectPeer.bind(this, connection.peer));
         this.connections[connection.peer] = connection;
       });
       if (this.puid) this.connectToPeer();
@@ -38,5 +39,9 @@ export default class MyPeer {
     const {ids, type, payload} = data;
     this.sendEvent(type, payload, [...ids, this.id]);
     this.stream.emit(type, payload);
+  }
+
+  disconnectPeer(peerId) {
+    delete this.connections[peerId];
   }
 }
