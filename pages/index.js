@@ -63,7 +63,7 @@ export default function Home() {
         <span className="text-primary">peer</span>-list
       </h1>
 
-      <form onSubmit={onSubmit} className="mt-5 form-control w-full mx-auto">
+      <form onSubmit={onSubmit} className="mt-8 form-control w-full mx-auto">
         <div className="relative">
           <input
             type="text"
