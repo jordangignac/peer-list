@@ -29,6 +29,11 @@ export default function Home() {
     addTodo({id: v4(), completed: false, content});
   };
 
+  const getLink = () => {
+    const url = `${window.location.host}?puid=${peer.id}`;
+    navigator.clipboard.writeText(url);
+  };
+
   const setCompleted = (id, emit = true) => {
     setTodos(todos => {
       return todos.map(todo => {
@@ -63,7 +68,11 @@ export default function Home() {
         <span className="text-primary">peer</span>-list
       </h1>
 
-      <form onSubmit={onSubmit} className="mt-8 form-control w-full mx-auto">
+      <button className="btn btn-xs btn-outline" onClick={getLink}>
+        get link
+      </button>
+
+      <form onSubmit={onSubmit} className="mt-6 form-control w-full mx-auto">
         <div className="relative">
           <input
             type="text"
