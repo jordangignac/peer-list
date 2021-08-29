@@ -30,7 +30,7 @@ export default function Home() {
   };
 
   const getLink = () => {
-    const url = `${window.location.host}?puid=${peer.id}`;
+    const url = `${window.location.host}/?puid=${peer.id}`;
     navigator.clipboard.writeText(url);
   };
 
