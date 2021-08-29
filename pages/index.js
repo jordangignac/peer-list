@@ -14,7 +14,7 @@ export default function Home() {
       const params = new URLSearchParams(window.location.search);
       const puid = params.get('puid');
 
-      const myPeer = new MyPeer(Peer, puid, todos);
+      const myPeer = new MyPeer(Peer, puid);
 
       myPeer.stream.on('ADD_TODO', data => addTodo(data, false));
       myPeer.stream.on('REMOVE_TODO', data => removeTodo(data, false));
@@ -24,90 +24,77 @@ export default function Home() {
     });
   }, []);
 
-  const setCompleted = (id, emit) => {
-    setTodos(todos =>
-      todos.map(i => (i.id === id ? {...i, completed: !i.completed} : i))
-    );
+  const onSubmit = event => {
+    event.preventDefault();
+    addTodo({id: v4(), completed: false, content});
+  };
+
+  const setCompleted = (id, emit = true) => {
+    setTodos(todos => {
+      return todos.map(todo => {
+        if (todo.id !== id) return todo;
+        return {...todo, completed: !todo.completed};
+      });
+    });
     if (emit) peer.sendEvent('SET_COMPLETED', id);
   };
 
-  const removeTodo = (id, emit) => {
+  const removeTodo = (id, emit = true) => {
     setTodos(todos => todos.filter(i => i.id !== id));
     if (emit) peer.sendEvent('REMOVE_TODO', id);
   };
 
-  const addTodo = (todo, emit) => {
+  const addTodo = (todo, emit = true) => {
     setTodos(todos => [...todos, todo]);
-    if (emit) peer.sendEvent('ADD_TODO', todo);
-    if (emit) setContent('');
-  };
-
-  const copyShareLink = () => {
-    const shareString = 'localhost:3000?puid=' + peer.id;
-    navigator.clipboard.writeText(shareString);
-  };
-
-  const onSubmit = (event, emit) => {
-    const todo = {id: v4(), completed: false, content};
-    event.preventDefault();
-    addTodo(todo, emit);
+    if (emit) {
+      peer.sendEvent('ADD_TODO', todo);
+      setContent('');
+    }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-2">
+    <main className="flex flex-col items-center m-auto w-full min-h-screen max-w-3xl p-5 sm:px-20">
       <Head>
         <title>peer-list</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center">
-        <h1 className="text-6xl font-bold indicator">
-          <div
-            onClick={copyShareLink}
-            className="indicator-item badge badge-secondary cursor-pointer"
+      <h1 className="text-5xl sm:text-6xl font-bold">
+        <span className="text-primary">peer</span>-list
+      </h1>
+
+      <code className="mt-3 p-3 font-mono text-sm sm:text-lg bg-gray-100 rounded-md">
+        collaborative distributed lists
+      </code>
+
+      <form onSubmit={onSubmit} className="mt-5 form-control w-full mx-auto">
+        <div className="relative">
+          <input
+            type="text"
+            value={content}
+            onChange={e => setContent(e.target.value)}
+            className="w-full pr-16 input input-primary"
+          />
+          <button
+            type="submit"
+            className="absolute top-0 right-0 rounded-l-none btn btn-primary"
           >
-            share
-          </div>
-          peer-
-          <span className="text-primary">list</span>
-        </h1>
-
-        <code className="mt-3 p-3 font-mono text-lg bg-gray-100 rounded-md">
-          collaborative distributed lists
-        </code>
-
-        <form
-          onSubmit={event => onSubmit(event, true)}
-          className="mt-6 max-w-2xl form-control w-3/4 mx-auto"
-        >
-          <div className="relative">
-            <input
-              type="text"
-              value={content}
-              onChange={e => setContent(e.target.value)}
-              className="w-full pr-16 input input-primary input-bordered"
-            />
-            <button
-              type="submit"
-              className="absolute top-0 right-0 rounded-l-none btn btn-primary"
-            >
-              Add Item
-            </button>
-          </div>
-        </form>
-
-        <div className="flex flex-col items-center justify-around max-w-4xl mt-6 w-full">
-          {todos.map(({id, completed, content}) => (
-            <TodoItem
-              content={content}
-              completed={completed}
-              removeItem={() => removeTodo(id, true)}
-              setCompleted={() => setCompleted(id, true)}
-              key={`todo-${id}`}
-            />
-          ))}
+            Add Item
+          </button>
         </div>
-      </main>
-    </div>
+      </form>
+
+      <div className="flex flex-col items-center justify-around mt-3 w-full">
+        {todos.map(({id, completed, content}) => (
+          <TodoItem
+            content={content}
+            completed={completed}
+            removeItem={() => removeTodo(id)}
+            setCompleted={() => setCompleted(id)}
+            key={`todo-${id}`}
+          />
+        ))}
+      </div>
+    </main>
   );
 }
